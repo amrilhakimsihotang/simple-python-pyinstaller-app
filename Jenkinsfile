@@ -30,6 +30,12 @@ pipeline {
                 }
             }
         }
+        stage('Manual Approval') {
+            steps {
+                input message: 'Lanjutkan ke tahap Deploy?'
+            }
+        }
+
         stage('Deliver') { 
             agent any
             environment { 
@@ -40,6 +46,7 @@ pipeline {
                 dir(path: env.BUILD_ID) { 
                     unstash(name: 'compiled-results') 
                     sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'" 
+                    sh "sleep 60"
                 }
             }
             post {
